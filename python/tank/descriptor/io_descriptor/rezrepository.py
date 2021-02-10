@@ -8,7 +8,11 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
-from importlib import reload
+try:
+    from importlib import reload
+except
+    pass
+
 import os
 import sys
 import copy
