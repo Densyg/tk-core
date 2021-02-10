@@ -9,14 +9,18 @@
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
 try:
-    from importlib import reload
+    from importlib import reload # python3
 except:
     pass
 
 import os
 import sys
 import copy
-# import StringIO
+
+try:
+    from StringIO import StringIO ## for Python 2
+except ImportError:
+    from io import StringIO ## for Python 3
 
 from .base import IODescriptorBase
 from ..errors import TankDescriptorError
