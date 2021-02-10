@@ -10,7 +10,7 @@
 
 try:
     from importlib import reload
-except
+except:
     pass
 
 import os
