@@ -26,6 +26,7 @@ def _initialize_descriptor_factory():
     from .appstore import IODescriptorAppStore
     from .dev import IODescriptorDev
     from .path import IODescriptorPath
+    from .rezrepository import IODescriptorRez
     from .shotgun_entity import IODescriptorShotgunEntity
     from .git_tag import IODescriptorGitTag
     from .git_branch import IODescriptorGitBranch
@@ -38,6 +39,7 @@ def _initialize_descriptor_factory():
     IODescriptorBase.register_descriptor_factory("shotgun", IODescriptorShotgunEntity)
     IODescriptorBase.register_descriptor_factory("git", IODescriptorGitTag)
     IODescriptorBase.register_descriptor_factory("git_branch", IODescriptorGitBranch)
+    IODescriptorBase.register_descriptor_factory("rez", IODescriptorRez)
     IODescriptorBase.register_descriptor_factory(
         "github_release", IODescriptorGithubRelease
     )
