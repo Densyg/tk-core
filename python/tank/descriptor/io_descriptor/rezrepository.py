@@ -8,10 +8,11 @@
 # agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
+from importlib import reload
 import os
 import sys
 import copy
-import StringIO
+# import StringIO
 
 from .base import IODescriptorBase
 from ..errors import TankDescriptorError
@@ -55,7 +56,7 @@ class IODescriptorRez(IODescriptorBase):
     If name is not specified and path is /tmp/foo/bar, the name will set to 'bar'
     """
 
-    def __init__(self, descriptor_dict):
+    def __init__(self, descriptor_dict, sg_connection, bundle_type):
         """
         Constructor
 
@@ -63,7 +64,7 @@ class IODescriptorRez(IODescriptorBase):
         :return: Descriptor instance
         """
 
-        super(IODescriptorRez, self).__init__(descriptor_dict)
+        super(IODescriptorRez, self).__init__(descriptor_dict, sg_connection, bundle_type)
 
         self._mod_rez = None
         self._mod_resolved_context = None
@@ -117,10 +118,16 @@ class IODescriptorRez(IODescriptorBase):
         # and normalize:
         self._path = os.path.normpath(self._path)
 
-        # if there is a version defined in the descriptor dict
-        # (this is handy when doing framework development, but totally
-        #  non-required for finding the code)
-        self._version = descriptor_dict.get("version") or "Undefined"
+        # # if there is a version defined in the descriptor dict
+        # # (this is handy when doing framework development, but totally
+        # #  non-required for finding the code)
+        # self._version = descriptor_dict.get("version") or "Undefined"
+
+        self._sg_connection = sg_connection
+        self._bundle_type = bundle_type
+        self._name = descriptor_dict.get("name")
+        self._version = descriptor_dict.get("version")
+        self._label = descriptor_dict.get("label")
 
         # if there is a name defined in the descriptor dict then lets use
         # this, otherwise we'll fall back to the folder name:
@@ -140,10 +147,10 @@ class IODescriptorRez(IODescriptorBase):
         return path
 
     def resolve_context(self, packages):
-        print "== Resolving with REZ"
+        print("== Resolving with REZ")
 
         if "USE_REZ_CACHE" not in os.environ:
-            print "= NOT USING REZ CACHE"
+            print("= NOT USING REZ CACHE")
             if not os.environ.get('REZ_PATH'):
                 raise TankDescriptorError("Could not find REZ_PATH in the envioronment!")
 
@@ -181,13 +188,13 @@ class IODescriptorRez(IODescriptorBase):
             context = None
             try:
                 context = rez.resolved_context.ResolvedContext(packages)
-            except Exception, e:
+            except Exception as e:
                 log.error(e)
                 pass
 
             return context
         else:
-            print "= USING REZ CACHE"
+            print("= USING REZ CACHE")
             if not os.environ.get('REZ_PATH'):
                 raise TankDescriptorError("Could not find REZ_PATH in the envioronment!")
 
@@ -252,7 +259,7 @@ class IODescriptorRez(IODescriptorBase):
                     context = self._mod_resolved_context.ResolvedContext(packages)
                     log.debug("[ REZ Descriptor ] Storing the cached context for packages: %s" % packages)
                     cached_rez_contexts[packages_id] = context
-                except Exception, e:
+                except Exception as e:
                     log.error(e)
                     pass
 
