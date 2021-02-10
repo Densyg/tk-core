@@ -111,7 +111,8 @@ class IODescriptorRez(IODescriptorBase):
         context = self.resolve_context([self._packages])
 
         if context:
-            context_info = StringIO.StringIO()
+            # context_info = StringIO.StringIO()
+            context_info = StringIO()
             context.print_info(buf=context_info)
             log.debug(context_info.getvalue())
             context_info.close()
